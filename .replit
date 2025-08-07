@@ -1,6 +1,7 @@
 modules = ["web", "python-3.12", "nodejs-20", "bash"]
 
-run = "python run.py"
+# Altera o run padrão para rodar init_db.py antes do app principal
+run = "sh -c 'python app/database/init_db.py && python run.py'"
 
 [nix]
 channel = "stable-25_05"
@@ -12,4 +13,5 @@ externalPort = 8000
 exposeLocalhost = true
 
 [deployment]
-run = ["sh", "-c", "python run.py"]
+# Mesmo comando para quando o Replit fizer o deploy
+run = ["sh", "-c", "python app/database/init_db.py && python run.py"]

@@ -1,10 +1,7 @@
-# Define os módulos usados no ambiente
 modules = ["web", "python-3.12", "nodejs-20", "bash"]
 
-# Comando que será executado ao iniciar o ambiente (chmod + executar o script)
-run = ["sh", "-c", "chmod +x setup.sh && ./setup.sh"]
+run = "python run.py"
 
-# Canal do Nix (opcional, se você quiser travar para uma versão específica)
 [nix]
 channel = "stable-25_05"
 packages = ["iana-etc"]
@@ -13,3 +10,6 @@ packages = ["iana-etc"]
 localPort = 5000
 externalPort = 8000
 exposeLocalhost = true
+
+[deployment]
+run = ["sh", "-c", "python run.py"]

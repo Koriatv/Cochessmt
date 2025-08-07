@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Train Mode</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Train Mode</h1>
+    
+    <div class="train-options">
+        <h2>Select Difficulty</h2>
+        <div class="difficulty-buttons">
+            <a href="{{ url_for('train.train_home', difficulty='easy') }}" 
+               class="difficulty-btn {% if difficulty == 'easy' %}active{% endif %}">Easy</a>
+            <a href="{{ url_for('train.train_home', difficulty='medium') }}" 
+               class="difficulty-btn {% if difficulty == 'medium' %}active{% endif %}">Medium</a>
+            <a href="{{ url_for('train.train_home', difficulty='hard') }}" 
+               class="difficulty-btn {% if difficulty == 'hard' %}active{% endif %}">Hard</a>
+        </div>
+    </div>
+
+    {% if puzzles %}
+    <div class="puzzles-section">
+        <h2>Puzzles ({{ difficulty.title() }})</h2>
+        <div class="puzzles-list">
+            {% for puzzle in puzzles %}
+            <div class="puzzle-item">
+                <div class="puzzle-header">
+                    <strong>Puzzle #{{ puzzle.id }}</strong>
+                </div>
+                <div class="puzzle-fen">
+                    <strong>FEN:</strong> {{ puzzle.fen }}
+                </div>
+                {% if puzzle.hint %}
+                <div class="puzzle-hint">
+                    <strong>Hint:</strong> {{ puzzle.hint }}
+                </div>
+                {% endif %}
+                <div class="puzzle-actions">
+                    <button class="play-puzzle-btn" onclick="startPuzzle('{{ puzzle.fen }}')">Play Puzzle</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Puzzle Gameplay Area -->
+    <div id="puzzle-game" style="display: none;">
+        <div class="puzzle-gameplay">
+            <h2>Solving Puzzle</h2>
+            <div id="puzzle-board-container">
+                <div id="puzzle-chessboard"></div>
+            </div>
+            <div class="puzzle-controls">
+                <button onclick="resetPuzzle()" class="puzzle-btn">Reset</button>
+                <button onclick="closePuzzle()" class="puzzle-btn">Back to List</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <a href="{{ url_for('lobby') }}">Back to Lobby</a>
+    </div>
+
+    <script>
+        // Chess pieces mapping
+        const pieces = {
+            'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟',
+            'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'P': '♙'
+        };
+
+        let currentPuzzleFen = '';
+        let selectedSquare = null;
+        let puzzleBoard = [];
+
+        function startPuzzle(fen) {
+            currentPuzzleFen = fen;
+            
+            // Show puzzle game area
+            document.querySelector('.train-options').style.display = 'none';
+            document.querySelector('.puzzles-section').style.display = 'none';
+            document.getElementById('puzzle-game').style.display = 'block';
+            
+            // Load the puzzle position
+            loadPuzzleFromFen(fen);
+        }
+
+        function closePuzzle() {
+            // Hide puzzle game area and show puzzle list
+            document.querySelector('.train-options').style.display = 'block';
+            document.querySelector('.puzzles-section').style.display = 'block';
+            document.getElementById('puzzle-game').style.display = 'none';
+        }
+
+        function resetPuzzle() {
+            if (currentPuzzleFen) {
+                loadPuzzleFromFen(currentPuzzleFen);
+            }
+        }
+
+        function loadPuzzleFromFen(fen) {
+            // Parse FEN and create board
+            const boardPart = fen.split(' ')[0];
+            puzzleBoard = [];
+            
+            // Convert FEN to 8x8 array
+            const rows = boardPart.split('/');
+            for (let row = 0; row < 8; row++) {
+                puzzleBoard[row] = [];
+                let col = 0;
+                for (let char of rows[row]) {
+                    if (isNaN(char)) {
+                        // It's a piece
+                        puzzleBoard[row][col] = char;
+                        col++;
+                    } else {
+                        // It's a number of empty squares
+                        const emptySquares = parseInt(char);
+                        for (let i = 0; i < emptySquares; i++) {
+                            puzzleBoard[row][col] = '';
+                            col++;
+                        }
+                    }
+                }
+            }
+            
+            createPuzzleBoard();
+        }
+
+        function createPuzzleBoard() {
+            const board = document.getElementById('puzzle-chessboard');
+            board.innerHTML = '';
+            
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement('div');
+                    square.classList.add('square');
+                    square.classList.add((row + col) % 2 === 0 ? 'white' : 'black');
+                    square.dataset.row = row;
+                    square.dataset.col = col;
+
+                    const piece = puzzleBoard[row][col];
+                    if (piece) {
+                        square.textContent = pieces[piece];
+                    }
+
+                    square.addEventListener('click', () => handlePuzzleClick(square));
+                    board.appendChild(square);
+                }
+            }
+        }
+
+        function handlePuzzleClick(square) {
+            if (selectedSquare) {
+                selectedSquare.classList.remove('selected');
+
+                const fromRow = parseInt(selectedSquare.dataset.row);
+                const fromCol = parseInt(selectedSquare.dataset.col);
+                const toRow = parseInt(square.dataset.row);
+                const toCol = parseInt(square.dataset.col);
+                const piece = selectedSquare.textContent;
+
+                // Move the piece
+                square.textContent = piece;
+                selectedSquare.textContent = '';
+                
+                // Update internal board
+                puzzleBoard[toRow][toCol] = puzzleBoard[fromRow][fromCol];
+                puzzleBoard[fromRow][fromCol] = '';
+                
+                selectedSquare = null;
+
+                // Check if puzzle is solved (basic check)
+                setTimeout(() => {
+                    alert('Move made! Check if puzzle is solved.');
+                }, 100);
+
+            } else if (square.textContent !== '') {
+                selectedSquare = square;
+                square.classList.add('selected');
+            }
+        }
+    </script>
+</body>
+</html>

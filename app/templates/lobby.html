@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Game Interface</title>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}"
+        />
+    </head>
+    <body>
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %}
+        <section role="alert" aria-live="polite" class="flash-messages">
+            <ul>
+                {% for category, message in messages %}
+                <li class="flash-{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %} {% endwith %}
+        <div class="game-container">
+            <div class="game-screen">
+                <a class="play-button" href="{{ url_for('match.screen') }}"
+                    >PLAY</a
+                >
+            </div>
+            <div class="controls">
+                <a href="{{ url_for('train') }}">TRAIN</a>
+                <a href="{{ url_for('history') }}">History</a>
+            </div>
+            <div class="points">
+                <span>Points:</span> <span>{{ points }}</span>
+            </div>
+        </div>
+        <div class="sidebar">
+            <input type="text" placeholder="Enter a value" />
+            <ul class="user-list">
+                <li>Junkicch</li>
+                <li>Lordwerter</li>
+                <li>Itsvioleth</li>
+            </ul>
+            <a href="{{ url_for('change_nickname') }}">Edit Profile</a>
+            <a href="{{ url_for('change_password') }}">Change Password</a>
+            <a href="{{ url_for('logout') }}" class="exit">Sair</a>
+        </div>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+    </body>
+</html>

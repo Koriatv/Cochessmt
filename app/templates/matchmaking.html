@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Buscando Oponentes</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Buscando {{ required }} jogadores...</h1>
+  <p id="status">0/{{ required }}</p>
+  <button id="btn-bots" style="display:none">Completar com bots e jogar</button>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+    const REQUIRED = {{ required }};
+    document.addEventListener('DOMContentLoaded', () => {
+      joinMatchmaking();
+      setInterval(pollMatchmakingStatus, 2000);
+      document.getElementById('btn-bots')
+              .addEventListener('click', completeWithBots);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jogo de Xadrez - {{ game_id }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body data-game-id="{{ game_id }}">
+
+  <h1>CoChess</h1>
+  <p>Game ID: {{ game_id }}</p>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <section role="alert" aria-live="polite" class="flash-messages">
+        <ul>
+          {% for category, message in messages %}
+            <li class="flash-{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endif %}
+  {% endwith %}
+
+  <div id="chessboard"></div>
+
+  <!-- Chat da Partida -->
+  <div id="chat-container" style="margin-top: 20px;">
+    <h2>Chat da Partida</h2>
+    <div
+      id="chat-box"
+      style="border: 1px solid #ccc; height: 200px; overflow-y: auto; padding: 8px; background: #fafafa;"
+    ></div>
+    <div style="margin-top: 8px;">
+      <input
+        type="text"
+        id="chat-input"
+        placeholder="Digite sua mensagem..."
+        style="width: 80%; padding: 6px;"
+      />
+      <button
+        id="chat-send-button"
+        style="padding: 6px 12px; margin-left: 4px;"
+      >
+        Enviar
+      </button>
+    </div>
+  </div>
+  <!-- /Chat da Partida -->
+
+  <form method="get" action="{{ url_for('suggest_move') }}" style="margin-top: 20px;">
+    <input type="hidden" name="game_id" value="{{ game_id }}">
+    <button type="submit">Sugerir Jogada</button>
+  </form>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

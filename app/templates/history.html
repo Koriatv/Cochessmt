@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="navbar">
+        <a class="btn" href="{{ url_for('game') }}">PLAY</a>
+        <a class="btn active" href="{{ url_for('train') }}">TRAIN</a>
+        <a class="btn" href="{{ url_for('lobby') }}">LOBBY</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>RESULT</th>
+                <th>ANALYSIS</th>
+                <th>SCORE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>victory</td><td>-</td><td>-</td></tr>
+            <tr><td>defeat</td><td>-</td><td>-</td></tr>
+            <tr><td>defeat</td><td>-</td><td>-</td></tr>
+            <tr><td>defeat</td><td>-</td><td>-</td></tr>
+            <tr><td>defeat</td><td>-</td><td>-</td></tr>
+            <tr><td>defeat</td><td>-</td><td>-</td></tr>
+            <tr><td>defeat</td><td>-</td><td>-</td></tr>
+            <tr><td>defeat</td><td>-</td><td>-</td></tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

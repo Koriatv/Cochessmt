@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Form Title -->
+        <h1>Log In</h1>
+        <section>
+            <!-- Login form -->
+            <form method="POST" action="{{ url_for('login') }}" aria-label="Login form">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email" aria-label="Enter your email address">
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password" aria-label="Enter your password">
+
+                <button type="submit" aria-label="Submit the login form">Log In</button>
+                <a href="{{ url_for('forget_password') }}">Forget Password</a>
+            </form>
+
+            <!-- Link to home page -->
+            <a href="{{ url_for('home') }}" aria-label="Navigate back to the home page">Back to Home</a>
+        </section>
+
+        <!-- Flash messages -->
+        <div>
+            {% if get_flashed_messages(with_categories=True) %}
+            <ul>
+                {% for category, message in get_flashed_messages(with_categories=True) %}
+                <li class="flash-{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
